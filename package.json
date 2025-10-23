@@ -1,0 +1,21 @@
+{
+  "name": "void2fa-terminal",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "keytar": "^7.9.0",
+    "speakeasy": "^2.0.0",
+    "tsyringe": "^4.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "@types/speakeasy": "^2.0.10"
+  }
+}
