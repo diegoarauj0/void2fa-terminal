@@ -43,7 +43,8 @@
     "paths": {
       "@app/*": ["./app/*"],
       "@domain/*": ["./domain/*"],
-      "@controllers/*": ["./controllers/*"]
+      "@controllers/*": ["./controllers/*"],
+      "@validators/*": ["./validators/*"]
     }
   }
 }

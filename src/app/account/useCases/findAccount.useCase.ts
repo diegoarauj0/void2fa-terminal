@@ -17,7 +17,17 @@ export class FindAccountUseCase implements IFindAccountUseCase {
   public async findAllAccounts(): Promise<(HotpAccountEntity | TotpAccountEntity)[]> {
     const accounts = await this.accountRepository.findAll();
 
-    return accounts;
+    return accounts.map((account) => {
+      if (account.type === "HOTP") {
+        return { ...account, code: this.hotpService.generate(account as HotpAccountEntity) };
+      }
+
+      if (account.type === "TOTP") {
+        return { ...account, code: this.totpService.generate(account as TotpAccountEntity) };
+      }
+
+      return account;
+    });
   }
 
   public async findAccount(id: string): Promise<(HotpAccountEntity | TotpAccountEntity) | null> {

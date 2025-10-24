@@ -7,7 +7,9 @@ export class HotpAccountEntity {
     public counter: number,
     public digits: number,
     public algorithm: "sha1" | "sha256" | "sha512",
+    public issuer: string,
+    public name: string,
     public encoding?: "ascii" | "hex" | "base32" | "base64",
-    public code?: string,
+    public code?: string
   ) {}
 }

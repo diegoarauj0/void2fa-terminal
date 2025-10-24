@@ -1,9 +1,9 @@
 import type { HotpAccountEntity } from "@domain/entities/hotpAccount.entity.js";
 import type { IHotpService } from "../contracts/services/hotp.service.js";
-import { hotp, type Encoding } from "speakeasy";
+import speakeasy from "speakeasy";
 
 export class HotpService implements IHotpService {
-  private detectEncoding(secret: string): Encoding {
+  private detectEncoding(secret: string): speakeasy.Encoding {
     if (secret.replace(/[0-9A-F]/gi, "").length === 0) return "hex";
     if (secret.replace(/[2-7A-Z]/g, "").length === 0) return "base32";
     if (secret.replace(/[0-9a-z+/=]/gi, "").length === 0) return "base64";
@@ -11,7 +11,7 @@ export class HotpService implements IHotpService {
   }
 
   public generate(hotpAccountEntity: HotpAccountEntity): string {
-    return hotp({
+    return speakeasy.hotp({
       counter: hotpAccountEntity.counter,
       secret: hotpAccountEntity.secret,
       algorithm: hotpAccountEntity.algorithm,

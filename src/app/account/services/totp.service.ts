@@ -1,9 +1,9 @@
 import type { TotpAccountEntity } from "@domain/entities/totpAccount.entity.js";
 import type { ITotpService } from "../contracts/services/totp.service.js";
-import { totp, type Encoding } from "speakeasy";
+import speakeasy from "speakeasy";
 
 export class TotpService implements ITotpService {
-  private detectEncoding(secret: string): Encoding {
+  private detectEncoding(secret: string): speakeasy.Encoding {
     if (secret.replace(/[0-9A-F]/gi, "").length === 0) return "hex";
     if (secret.replace(/[2-7A-Z]/g, "").length === 0) return "base32";
     if (secret.replace(/[0-9a-z+/=]/gi, "").length === 0) return "base64";
@@ -11,7 +11,7 @@ export class TotpService implements ITotpService {
   }
 
   public generate(totpAccountEntity: TotpAccountEntity): string {
-    return totp({
+    return speakeasy.totp({
       secret: totpAccountEntity.secret,
       algorithm: totpAccountEntity.algorithm,
       digits: totpAccountEntity.digits,

@@ -2,16 +2,20 @@ import { type IAccountRepository } from "@app/account/contracts/repositories/acc
 import { TotpAccountEntity } from "@domain/entities/totpAccount.entity.js";
 import { HotpAccountEntity } from "@domain/entities/hotpAccount.entity.js";
 import { injectable } from "tsyringe";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
 import keytar from "keytar";
-import path from "path";
 import fs from "fs";
 
 let accountsCache: Map<string, TotpAccountEntity | HotpAccountEntity> | null = null;
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 @injectable()
 export class AccountRepository implements IAccountRepository {
   private get fileAccountPath() {
-    return path.join("..", "..", "..", "..", "accounts.json");
+    return path.join(__dirname, "..", "..", "..", "..", "accounts.json");
   }
 
   private async loadCache(): Promise<void> {
@@ -51,7 +55,11 @@ export class AccountRepository implements IAccountRepository {
   }
 
   private async readAccountsFileInString(): Promise<string> {
-    return await fs.promises.readFile(this.fileAccountPath, "utf-8");
+    if (fs.existsSync(this.fileAccountPath)) {
+      return await fs.promises.readFile(this.fileAccountPath, "utf-8");
+    }
+
+    return "{}";
   }
 
   private async readAccountsFile(): Promise<{ hotp: HotpAccountEntity[]; totp: TotpAccountEntity[] }> {
@@ -59,6 +67,13 @@ export class AccountRepository implements IAccountRepository {
       hotp: Omit<HotpAccountEntity, "secret">[];
       totp: Omit<TotpAccountEntity, "secret">[];
     };
+
+    if (accounts.hotp === undefined) {
+      accounts.hotp = [];
+    }
+    if (accounts.totp === undefined) {
+      accounts.totp = [];
+    }
 
     const secretAccounts = { hotp: [], totp: [] } as {
       hotp: HotpAccountEntity[];
@@ -75,6 +90,8 @@ export class AccountRepository implements IAccountRepository {
             account.counter,
             account.digits,
             account.algorithm,
+            account.issuer,
+            account.name,
             account.encoding,
           ),
         );
@@ -91,6 +108,8 @@ export class AccountRepository implements IAccountRepository {
             account.period,
             account.digits,
             account.algorithm,
+            account.issuer,
+            account.name,
             account.encoding,
           ),
         );
@@ -131,6 +150,8 @@ export class AccountRepository implements IAccountRepository {
           account.counter,
           account.digits,
           account.algorithm,
+          account.issuer,
+          account.name,
           account.encoding,
         ),
       );
@@ -150,6 +171,8 @@ export class AccountRepository implements IAccountRepository {
           account.period,
           account.digits,
           account.algorithm,
+          account.issuer,
+          account.name,
           account.encoding,
         ),
       );
@@ -219,6 +242,7 @@ export class AccountRepository implements IAccountRepository {
 
     if (accountType === "hotp") {
       accounts.hotp.push(_account as HotpAccountEntity);
+      await this.writeAccountFile(accounts);
       return _account;
     }
 
