@@ -41,10 +41,7 @@
 
     "baseUrl": "./src",
     "paths": {
-      "@app/*": ["./app/*"],
-      "@domain/*": ["./domain/*"],
-      "@controllers/*": ["./controllers/*"],
-      "@validators/*": ["./validators/*"]
+      "@/*": ["./*"],
     }
   }
 }

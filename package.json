@@ -14,7 +14,7 @@
   "type": "module",
   "main": "index.js",
   "bin": {
-    "void-2fa": "./dist/index.js"
+    "void2fa": "./dist/index.js"
   },
   "scripts": {
     "start": "node dist/index.js",
@@ -27,17 +27,14 @@
   },
   "dependencies": {
     "chalk": "^5.6.2",
-    "cli-table3": "^0.6.5",
     "clipboardy": "^5.0.0",
     "commander": "^14.0.1",
     "figlet": "^1.9.3",
     "joi": "^18.0.1",
     "keytar": "^7.9.0",
-    "reflect-metadata": "^0.2.2",
     "speakeasy": "^2.0.0",
     "tsc-alias": "^1.8.16",
     "tsx": "^4.20.6",
-    "tsyringe": "^4.10.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
