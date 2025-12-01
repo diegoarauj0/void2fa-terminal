@@ -28,7 +28,7 @@ export const deleteCommand = new BaseCommand({
 
       console.log(
         logger.success(
-          `🗑️ Account deleted successfully\n Name: ${account.name}\n Issuer: ${account.issuer}\n ID: ${account.id}`,
+          `Account deleted successfully\n Name: ${account.name}\n Issuer: ${account.issuer}\n ID: ${account.id}`,
         ),
       );
     } catch (err) {
