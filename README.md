@@ -1,10 +1,9 @@
-
+# Void-2FA Terminal
 
 <div align="center">
   <img width="471" height="134" alt="Captura de tela de 2025-11-30 21-33-36" src="https://github.com/user-attachments/assets/29b9af64-a8af-4623-b604-e6095a399c9f" />
 </div>
 
-# Void-2FA Terminal
 
 <div align="center">
     <img src="https://github.com/user-attachments/assets/7bead31d-7f91-4ff8-8cce-dbb13a1f51ae" width="500px" align="center"/>
