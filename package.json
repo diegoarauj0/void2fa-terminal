@@ -1,6 +1,6 @@
 {
   "name": "void2fa-terminal",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A CLI tool for managing 2FA authentication accounts.",
   "license": "MIT",
   "keywords": [
