@@ -1,6 +1,11 @@
 import { hotpAccountRepository, totpAccountRepository } from "@/repositories/index.js";
 import { HotpAccountEntity, TotpAccountEntity } from "@/entities/index.js";
-import { findAccountByID, findAccountByName, generateHotpCode, generateTotpCode } from "@/utils/account.utils.js";
+import {
+  findAccountByID,
+  findAccountByName,
+  generateHotpCode,
+  generateTotpCode,
+} from "@/utils/account.utils.js";
 import { BaseCommand } from "../base.command.js";
 import { setTimeout } from "timers/promises";
 import { logger } from "@/utils/logger.js";

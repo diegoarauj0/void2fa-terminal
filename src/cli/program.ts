@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { Command } from "commander";
 import figlet from "figlet";
 import chalk from "chalk";
@@ -20,7 +19,7 @@ const description = chalk.magentaBright(
   })}\n${config.version} A CLI tool for managing 2FA authentication accounts.`,
 );
 
-program.name("Void2FA-Auth").version("1.0.0").description(description);
+program.name("Void2FA-Auth").version(config.version).description(description);
 
 program.addCommand(codeCommand);
 program.addCommand(deleteCommand);
