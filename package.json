@@ -1,6 +1,6 @@
 {
   "name": "void2fa-terminal",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "A CLI tool for managing 2FA authentication accounts.",
   "license": "MIT",
   "keywords": [
@@ -14,30 +14,32 @@
   "type": "module",
   "main": "index.js",
   "bin": {
-    "void-2fa": "./dist/index.js"
+    "void2fa": "./dist/index.js"
   },
   "scripts": {
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "build": "tsc && tsc-alias"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diegoarauj0/void2fa-terminal.git"
+  },
   "dependencies": {
     "chalk": "^5.6.2",
-    "cli-table3": "^0.6.5",
     "clipboardy": "^5.0.0",
     "commander": "^14.0.1",
     "figlet": "^1.9.3",
     "joi": "^18.0.1",
     "keytar": "^7.9.0",
-    "reflect-metadata": "^0.2.2",
-    "speakeasy": "^2.0.0",
-    "tsc-alias": "^1.8.16",
-    "tsx": "^4.20.6",
-    "tsyringe": "^4.10.0",
-    "typescript": "^5.9.3"
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^24.9.1",
-    "@types/speakeasy": "^2.0.10"
+    "@types/speakeasy": "^2.0.10",
+    "@vercel/ncc": "^0.38.4",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }
