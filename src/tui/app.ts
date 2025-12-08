@@ -6,5 +6,5 @@ export function app() {
   globalEvents();
   pagesHandler();
 
-  mainScreen.emit("app:page.change", "home");
+  mainScreen.emit("app:page.change", "accounts");
 }

@@ -1,13 +1,6 @@
-import { totpAccountRepository, hotpAccountRepository } from "@/repositories/index.js";
+import { findAllAccounts } from "@/utils/account.utils.js";
 import { BaseCommand } from "../base.command.js";
 import { logger } from "@/utils/logger.js";
-
-async function findAllAccounts() {
-  return [
-    ...(await hotpAccountRepository.findAllAccounts()),
-    ...(await totpAccountRepository.findAllAccounts()),
-  ];
-}
 
 export const findAllCommand = new BaseCommand({
   name: "find-all",

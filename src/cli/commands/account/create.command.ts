@@ -94,10 +94,10 @@ export const createCommand = new BaseCommand({
       if (data.type === "HOTP") {
         createdAccount = createHotpAccountEntity(id, data);
         await hotpAccountRepository.save(createdAccount);
+      } else {
+        createdAccount = createTotpAccountEntity(id, data);
+        await totpAccountRepository.save(createdAccount);
       }
-
-      createdAccount = createTotpAccountEntity(id, data);
-      await totpAccountRepository.save(createdAccount);
 
       console.log(logger.success(`Registered Account`));
       console.log(logger.account(createdAccount, false));

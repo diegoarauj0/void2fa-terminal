@@ -53,11 +53,11 @@ export async function appNameComponent(props: AppNameProps) {
     },
   });
 
-  const internalID = setInterval(async () => {
+  const intervalID = setInterval(async () => {
     currentFontIndex = currentFontIndex >= fonts.length ? 1 : currentFontIndex + 1;
     title.content = await figlet.text(`${config.name}`, { font: fonts[currentFontIndex] || "Slant" });
     mainScreen.emit("app:render");
   }, 1000);
 
-  return { box, internalID };
+  return { box, intervalID };
 }

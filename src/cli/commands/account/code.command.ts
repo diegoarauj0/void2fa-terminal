@@ -5,15 +5,12 @@ import {
   findAccountByName,
   generateHotpCode,
   generateTotpCode,
+  getTotpRemaining,
 } from "@/utils/account.utils.js";
 import { BaseCommand } from "../base.command.js";
 import { setTimeout } from "timers/promises";
 import { logger } from "@/utils/logger.js";
 import clipboard from "clipboardy";
-
-function getTotpRemaining(period: number) {
-  return period - (Math.floor(Date.now() / 1000) % period);
-}
 
 async function handleTotpAccount(account: TotpAccountEntity, options: any) {
   let remaining = getTotpRemaining(account.period);

@@ -3,6 +3,5 @@ import blessed from "blessed";
 
 export const mainScreen = blessed.screen({
   title: config.name,
-  smartCSR: true,
-  dockBorders: true,
+  smartCSR: false,
 });

@@ -1,6 +1,6 @@
 import { commandListComponent } from "../components/commandList.component.js";
 import { createGlobalAlertBox, showAlert } from "./globalAlertBox.js";
-import { viewCodesPage } from "../pages/viewCodes.page.js";
+import { accountsPage } from "../pages/accounts.page.js";
 import { homePage } from "../pages/home.page.js";
 import { mainScreen } from "./screen.js";
 import blessed from "blessed";
@@ -15,18 +15,18 @@ interface Page {
 
 const pages: Map<string, Page> = new Map();
 
-pages.set("home", { keys: ["f1", "C-h"], func: homePage });
-pages.set("codes", { keys: ["f2", "C-v"], func: viewCodesPage });
+pages.set("home", { keys: ["f1"], func: homePage });
+pages.set("accounts", { keys: ["f2"], func: accountsPage });
 
 function setupLayout(): void {
   commandListComponent({
-    backgroundColor: "purple",
+    backgroundColor: "black",
     color: "magenta",
     pagesShortcut: true,
     parent: mainScreen,
     pages,
   });
-  createGlobalAlertBox(mainScreen);
+  createGlobalAlertBox();
 }
 
 export function pagesHandler(): void {
@@ -39,7 +39,7 @@ export function pagesHandler(): void {
     },
   });
 
-  const exportsListEvents: string[] = ["keypress"];
+  const exportsListEvents: string[] = ["resize", "keypress"];
 
   exportsListEvents.forEach((eventName) => {
     mainScreen.on(eventName, (...args) => {
@@ -77,7 +77,7 @@ export function pagesHandler(): void {
     if (lockedPage) return;
 
     if (currentPage === name) {
-      showAlert(mainScreen, `You are now on the "${name}" page!`, "Waring!");
+      showAlert(`You are now on the "${name}" page!`, "Waring!");
       return;
     }
 

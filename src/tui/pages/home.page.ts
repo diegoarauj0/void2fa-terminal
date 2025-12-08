@@ -6,13 +6,13 @@ import blessed from "blessed";
 export async function homePage(container: blessed.Widgets.Node) {
   backgroundColorComponent({ backgroundColor: "black", parent: container });
 
-  const { internalID } = await appNameComponent({
+  const { intervalID } = await appNameComponent({
     backgroundColor: "black",
     color: "magenta",
     parent: container,
   });
 
-  mainScreen.on("app:page.close", (name: string) => {
-    if (name === "home") clearInterval(internalID);
+  mainScreen.once("app:page.close", () => {
+    clearInterval(intervalID);
   });
 }

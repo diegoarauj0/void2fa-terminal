@@ -1,9 +1,10 @@
 import type { Widgets } from "blessed";
 import blessed from "blessed";
+import { mainScreen } from "./screen.js";
 
 let alertBox: Widgets.BoxElement | null = null;
 
-export function createGlobalAlertBox(screen: Widgets.Screen) {
+export function createGlobalAlertBox() {
   if (alertBox) alertBox.parent.remove(alertBox);
 
   alertBox = blessed.box({
@@ -21,27 +22,27 @@ export function createGlobalAlertBox(screen: Widgets.Screen) {
     },
   });
 
-  screen.append(alertBox);
+  mainScreen.append(alertBox);
 
-  screen.key(["escape"], () => {
-    if (alertBox?.visible) hideAlert(screen);
+  mainScreen.key(["escape"], () => {
+    if (alertBox?.visible) hideAlert();
   });
 
   return alertBox;
 }
 
-export function showAlert(screen: Widgets.Screen, message: string, label?: string) {
-  if (!alertBox) createGlobalAlertBox(screen);
+export function showAlert(message: string, label?: string) {
+  if (!alertBox) createGlobalAlertBox();
 
   alertBox?.setLabel(`${label || "Global Alert"}`);
   alertBox!.setContent(`${message}`);
   alertBox!.show();
   
-  screen.render();
+  mainScreen.render();
 }
 
-export function hideAlert(screen: Widgets.Screen) {
+export function hideAlert() {
   if (!alertBox) return;
   alertBox.hide();
-  screen.render();
+  mainScreen.render();
 }
