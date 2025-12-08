@@ -3,6 +3,10 @@ import type { TotpAccountEntity } from "@/entities/totpAccount.entity.js";
 import type { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
 import speakeasy from "speakeasy";
 
+export function getTotpRemaining(period: number) {
+  return period - (Math.floor(Date.now() / 1000) % period);
+}
+
 export async function findAccountByID(id: string) {
   return (
     (await hotpAccountRepository.findAccountByID(id)) || (await totpAccountRepository.findAccountByID(id))
@@ -41,4 +45,11 @@ export function generateHotpCode(hotpAccountEntity: HotpAccountEntity): string {
     digits: hotpAccountEntity.digits,
     encoding: hotpAccountEntity.encoding,
   });
+}
+
+export async function findAllAccounts() {
+  return [
+    ...(await hotpAccountRepository.findAllAccounts()),
+    ...(await totpAccountRepository.findAllAccounts()),
+  ];
 }

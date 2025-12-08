@@ -8,6 +8,7 @@ import { deleteCommand } from "./commands/account/delete.command.js";
 import { editCommand } from "./commands/account/edit.command.js";
 import { findCommand } from "./commands/account/find.command.js";
 import { findAllCommand } from "./commands/account/findAll.command.js";
+import { tuiCommand } from "./commands/account/tui.command.js";
 
 const program = new Command();
 
@@ -19,7 +20,7 @@ const description = chalk.magentaBright(
   })}\n${config.version} A CLI tool for managing 2FA authentication accounts.`,
 );
 
-program.name("Void2FA-Auth").version(config.version).description(description);
+program.name(config.name).version(config.version).description(description);
 
 program.addCommand(codeCommand);
 program.addCommand(deleteCommand);
@@ -27,5 +28,6 @@ program.addCommand(editCommand);
 program.addCommand(findCommand);
 program.addCommand(findAllCommand);
 program.addCommand(createCommand);
+program.addCommand(tuiCommand);
 
 program.parse();
