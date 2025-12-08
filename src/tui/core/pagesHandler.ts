@@ -4,6 +4,7 @@ import { accountsPage } from "../pages/accounts.page.js";
 import { homePage } from "../pages/home.page.js";
 import { mainScreen } from "./screen.js";
 import blessed from "blessed";
+import { createPage } from "../pages/create.page.js";
 
 let currentPage: null | string = null;
 let lockedPage: boolean = false;
@@ -17,6 +18,7 @@ const pages: Map<string, Page> = new Map();
 
 pages.set("home", { keys: ["f1"], func: homePage });
 pages.set("accounts", { keys: ["f2"], func: accountsPage });
+pages.set("create", { keys: ["f3"], func: createPage });
 
 function setupLayout(): void {
   commandListComponent({
