@@ -2,7 +2,7 @@ import * as VOs from "@/domain/VOs/account.vo.js";
 
 interface CreateData {
   algorithm: string;
-  encoding: string;
+  encoding: string | undefined;
   period: number;
   secret: string;
   digits: number;
@@ -24,6 +24,8 @@ export class TotpAccountEntity {
   ) {}
 
   public static create(data: CreateData): TotpAccountEntity {
+    const secret = new VOs.SecretVO(data.secret);
+
     return new TotpAccountEntity(
       new VOs.IDVO(data.id),
       new VOs.NameVO(data.name),
@@ -31,7 +33,7 @@ export class TotpAccountEntity {
       new VOs.SecretVO(data.secret),
       new VOs.DigitsVO(data.digits),
       new VOs.AlgorithmVO(data.algorithm),
-      new VOs.EncodingVO(data.encoding),
+      data.encoding === undefined ? secret.detectEncoding() : new VOs.EncodingVO(data.encoding),
       new VOs.PeriodVO(data.period),
     );
   }

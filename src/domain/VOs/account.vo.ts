@@ -1,4 +1,4 @@
-import { validators } from "@/infra/validators/account.validators.js";
+import { validators } from "@/validators/account.validators.js";
 import { BaseVO } from "@/domain/VOs/base.vo.js";
 
 export class EncodingVO extends BaseVO<"ascii" | "hex" | "base32" | "base64"> {
