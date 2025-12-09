@@ -1,10 +1,10 @@
-import { commandListComponent } from "../components/commandList.component.js";
-import { createGlobalAlertBox, showAlert } from "./globalAlertBox.js";
-import { accountsPage } from "../pages/accounts.page.js";
-import { homePage } from "../pages/home.page.js";
-import { mainScreen } from "./screen.js";
+import { commandListComponent } from "@/tui/components/commandList.component.js";
+import { createGlobalAlertBox, showAlert } from "@/tui/core/globalAlertBox.js";
+import { accountsPage } from "@/tui/pages/accounts.page.js";
+import { createPage } from "@/tui/pages/create.page.js";
+import { homePage } from "@/tui/pages/home.page.js";
+import { mainScreen } from "@/tui/core/screen.js";
 import blessed from "blessed";
-import { createPage } from "../pages/create.page.js";
 
 let currentPage: null | string = null;
 let lockedPage: boolean = false;

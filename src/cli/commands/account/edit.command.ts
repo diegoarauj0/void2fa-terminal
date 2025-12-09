@@ -1,36 +1,58 @@
-import { totpAccountRepository, hotpAccountRepository } from "@/repositories/index.js";
-import { findAccountByID, findAccountByName } from "@/utils/account.utils.js";
-import { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
-import * as schema from "@/validators/account.validators.js";
-import { BaseCommand } from "../base.command.js";
+import { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
+import { accountRepository } from "@/repositories/account.repository.js";
+import { BaseCommand } from "@/cli/commands/common/base.command.js";
+import { schemas } from "@/validators/account.validators.js";
+import { findByIdOrName } from "@/utils/findByIdOrName.js";
+import * as VOs from "@/domain/VOs/account.vo.js";
 import { logger } from "@/utils/logger.js";
 import Joi from "joi";
 
-interface IEditSchema {
-  name?: string;
-  issuer?: string;
-  secret?: string;
-  algorithm?: "sha1" | "sha256" | "sha512";
-  encoding?: "ascii" | "hex" | "base32" | "base64" | undefined;
-  period?: number;
-  digits?: number;
-  counter?: number;
-}
-
-const editSchema = Joi.object<IEditSchema>({
-  name: schema.accountName,
-  issuer: schema.accountIssuer,
-  secret: schema.accountSecret,
-  algorithm: schema.accountAlgorithm,
-  encoding: schema.accountEncoding,
-  period: schema.accountPeriod,
-  digits: schema.accountDigits,
-  counter: schema.accountCounter,
+const editSchema = Joi.object({
+  name: schemas.name,
+  issuer: schemas.issuer,
+  secret: schemas.secret,
+  algorithm: schemas.algorithm,
+  encoding: schemas.encoding,
+  period: schemas.period,
+  digits: schemas.digits,
+  counter: schemas.counter,
 });
 
+async function action(idorname: string, options: any) {
+  try {
+    const data = await editSchema.validateAsync({ ...options });
+
+    const account = await findByIdOrName(idorname);
+
+    if (!account) {
+      return console.error(logger.error("This account was not found"));
+    }
+
+    account.name = data.name === undefined ? account.name : new VOs.NameVO(data.name);
+    account.issuer = data.issuer === undefined ? account.issuer : new VOs.IssuerVO(data.issuer);
+    account.secret = data.secret === undefined ? account.secret : new VOs.SecretVO(data.secret);
+    account.algorithm =
+      data.algorithm === undefined ? account.algorithm : new VOs.AlgorithmVO(data.algorithm);
+    account.encoding = data.encoding === undefined ? account.encoding : new VOs.EncodingVO(data.encoding);
+    account.digits = data.digits === undefined ? account.digits : new VOs.DigitsVO(data.digits);
+
+    if (account instanceof HotpAccountEntity) {
+      account.counter = data.counter === undefined ? account.counter : new VOs.CounterVO(data.counter);
+    } else {
+      account.period = data.period === undefined ? account.period : new VOs.PeriodVO(data.period);
+    }
+
+    await accountRepository.save(account)
+
+    console.log("Account updated successfully!");
+  } catch (err) {
+    return console.log(logger.error(`error: ${err}`));
+  }
+}
+
 export const editCommand = new BaseCommand({
-  name: "edit",
   arguments: ["<idorname>"],
+  name: "edit",
   description:
     "Edit a saved account. (Note: The ONLY field that cannot be changed is the account type (HOTP/TOTP).)",
   examples: [
@@ -57,32 +79,5 @@ export const editCommand = new BaseCommand({
     { name: "-d, --digits <count>", description: "Digits" },
     { name: "-c, --counter <value>", description: "Initial counter (for HOTP)" },
   ],
-  action: async (idorname, options) => {
-    const data = await editSchema.validateAsync({ ...options });
-
-    const account = (await findAccountByID(idorname)) || (await findAccountByName(idorname));
-
-    if (!account) {
-      return console.error(logger.error("This account was not found"));
-    }
-
-    account.name = data.name ?? account.name;
-    account.issuer = data.issuer ?? account.issuer;
-    account.secret = data.secret ?? account.secret;
-    account.algorithm = data.algorithm ?? account.algorithm;
-    account.encoding = data.encoding ?? account.encoding;
-    account.digits = data.digits ?? account.digits;
-
-    if (account instanceof HotpAccountEntity) {
-      account.counter = data.counter ?? account.counter;
-
-      await hotpAccountRepository.save(account);
-    } else {
-      account.period = data.period ?? account.period;
-
-      await totpAccountRepository.save(account);
-    }
-
-    console.log("Account updated successfully!");
-  },
+  action,
 });

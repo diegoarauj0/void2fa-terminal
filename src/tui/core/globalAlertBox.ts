@@ -1,6 +1,6 @@
+import { mainScreen } from "@/tui/core/screen.js";
 import type { Widgets } from "blessed";
 import blessed from "blessed";
-import { mainScreen } from "./screen.js";
 
 let alertBox: Widgets.BoxElement | null = null;
 

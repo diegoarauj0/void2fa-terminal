@@ -2,12 +2,12 @@ import { logger } from "@/utils/logger.js";
 import { Command } from "commander";
 
 interface CreateBaseCommandProps {
+  action: (this: Command, ...args: any[]) => void | Promise<void>;
+  examples?: { command: string; comment?: string }[];
   options?: { name: string; description: string }[];
   arguments?: string[];
   description: string;
-  examples?: { command: string; comment?: string }[];
   name: string;
-  action: (this: Command, ...args: any[]) => void | Promise<void>;
 }
 
 export class BaseCommand extends Command {

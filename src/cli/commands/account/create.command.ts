@@ -1,8 +1,9 @@
-import { totpAccountRepository, hotpAccountRepository } from "@/repositories/index.js";
-import { detectEncoding, findAccountByName } from "@/utils/account.utils.js";
-import { TotpAccountEntity, HotpAccountEntity } from "@/entities/index.js";
-import * as schema from "@/validators/account.validators.js";
-import { BaseCommand } from "../base.command.js";
+import { accountRepository } from "@/repositories/account.repository.js";
+import { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
+import { TotpAccountEntity } from "@/domain/entities/totpAccount.entity.js";
+import { BaseCommand } from "@/cli/commands/common/base.command.js";
+import { schemas } from "@/validators/account.validators.js";
+import { NameVO } from "@/domain/VOs/account.vo.js";
 import { logger } from "@/utils/logger.js";
 import crypto from "crypto";
 import Joi from "joi";
@@ -20,41 +21,67 @@ interface ICreateSchema {
 }
 
 const createSchema = Joi.object<ICreateSchema>({
-  name: schema.accountName.required(),
-  issuer: schema.accountIssuer.required(),
-  secret: schema.accountSecret.required(),
-  algorithm: schema.accountAlgorithm,
-  encoding: schema.accountEncoding,
-  period: schema.accountPeriod,
-  digits: schema.accountDigits,
-  counter: schema.accountCounter,
-  type: schema.accountType,
+  issuer: schemas.issuer.required(),
+  secret: schemas.secret.required(),
+  name: schemas.name.required(),
+  algorithm: schemas.algorithm,
+  encoding: schemas.encoding,
+  counter: schemas.counter,
+  period: schemas.period,
+  digits: schemas.digits,
+  type: schemas.type,
 });
 
-function createHotpAccountEntity(id: string, data: ICreateSchema): HotpAccountEntity {
-  return new HotpAccountEntity(
-    id,
-    data.secret,
-    data.counter || 0,
-    data.digits || 6,
-    data.algorithm || "sha1",
-    data.issuer,
-    data.name,
-    data.encoding || detectEncoding(data.secret),
-  );
-}
+async function action(name: string, issuer: string, secret: string, options: any) {
+  try {
+    const data = await createSchema.validateAsync({ name, issuer, secret, ...options });
 
-function createTotpAccountEntity(id: string, data: ICreateSchema): TotpAccountEntity {
-  return new TotpAccountEntity(
-    id,
-    data.secret,
-    data.period || 30,
-    data.digits || 6,
-    data.algorithm || "sha1",
-    data.issuer,
-    data.name,
-    data.encoding || detectEncoding(data.secret),
-  );
+    if ((await accountRepository.findByName(new NameVO(name))) !== null) {
+      return console.log(logger.error(`An account with the name "${data.name}" already exists`));
+    }
+
+    const id = crypto.randomUUID();
+
+    let createdAccount;
+
+    if (data.type === "HOTP") {
+      createdAccount = await accountRepository.save(
+        HotpAccountEntity.create({
+          id: id,
+          name: data.name,
+          algorithm: data.algorithm || "sha1",
+          encoding: data.encoding,
+          counter: data.counter || 0,
+          digits: data.digits || 6,
+          issuer: data.issuer,
+          secret: data.secret,
+        }),
+      );
+    } else {
+      createdAccount = await accountRepository.save(
+        TotpAccountEntity.create({
+          id: id,
+          name: data.name,
+          algorithm: data.algorithm || "sha1",
+          encoding: data.encoding,
+          period: data.period || 30,
+          digits: data.digits || 6,
+          issuer: data.issuer,
+          secret: data.secret,
+        }),
+      );
+    }
+
+    console.log(logger.success(`Registered Account`));
+    console.log(logger.account(createdAccount, false));
+
+    return;
+  } catch (err) {
+    if (err instanceof Joi.ValidationError) {
+      return console.log(logger.error(`error: ${err.message}`));
+    }
+    return console.log(logger.error(`error: ${err}`));
+  }
 }
 
 export const createCommand = new BaseCommand({
@@ -79,33 +106,5 @@ export const createCommand = new BaseCommand({
     { name: "-c, --counter <value>", description: "Initial counter (for HOTP, default: 0)" },
     { name: "-t, --type <type>", description: "Account type: TOTP (default) or HOTP" },
   ],
-  action: async (name, issuer, secret, options) => {
-    try {
-      const data = await createSchema.validateAsync({ name, issuer, secret, ...options });
-
-      if ((await findAccountByName(name)) !== null) {
-        return console.log(logger.error(`An account with the name "${data.name}" already exists`));
-      }
-
-      const id = crypto.randomUUID();
-
-      let createdAccount;
-
-      if (data.type === "HOTP") {
-        createdAccount = createHotpAccountEntity(id, data);
-        await hotpAccountRepository.save(createdAccount);
-      } else {
-        createdAccount = createTotpAccountEntity(id, data);
-        await totpAccountRepository.save(createdAccount);
-      }
-
-      console.log(logger.success(`Registered Account`));
-      console.log(logger.account(createdAccount, false));
-    } catch (err) {
-      if (err instanceof Joi.ValidationError) {
-        return console.log(logger.error(`error: ${err.message}`));
-      }
-      return console.log(logger.error(`error: ${err}`));
-    }
-  },
+  action,
 });

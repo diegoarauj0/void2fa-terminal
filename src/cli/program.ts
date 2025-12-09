@@ -1,14 +1,13 @@
+import { findAllCommand } from "@/cli/commands/account/findAll.command.js";
+import { deleteCommand } from "@/cli/commands/account/delete.command.js";
+import { createCommand } from "@/cli/commands/account/create.command.js";
+import { codeCommand } from "@/cli/commands/account/code.command.js";
+import { editCommand } from "@/cli/commands/account/edit.command.js";
+import { findCommand } from "@/cli/commands/account/find.command.js";
+import { config } from "@/config.js";
 import { Command } from "commander";
 import figlet from "figlet";
 import chalk from "chalk";
-import { createCommand } from "./commands/account/create.command.js";
-import { config } from "@/config.js";
-import { codeCommand } from "./commands/account/code.command.js";
-import { deleteCommand } from "./commands/account/delete.command.js";
-import { editCommand } from "./commands/account/edit.command.js";
-import { findCommand } from "./commands/account/find.command.js";
-import { findAllCommand } from "./commands/account/findAll.command.js";
-import { tuiCommand } from "./commands/account/tui.command.js";
 
 const program = new Command();
 
@@ -28,6 +27,5 @@ program.addCommand(editCommand);
 program.addCommand(findCommand);
 program.addCommand(findAllCommand);
 program.addCommand(createCommand);
-program.addCommand(tuiCommand);
 
 program.parse();

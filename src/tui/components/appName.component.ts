@@ -1,4 +1,4 @@
-import { mainScreen } from "../core/screen.js";
+import { mainScreen } from "@/tui/core/screen.js";
 import { config } from "@/config.js";
 import blessed from "blessed";
 import figlet from "figlet";
@@ -59,5 +59,5 @@ export async function appNameComponent(props: AppNameProps) {
     mainScreen.emit("app:render");
   }, 1000);
 
-  return { box, intervalID };
+  return intervalID;
 }

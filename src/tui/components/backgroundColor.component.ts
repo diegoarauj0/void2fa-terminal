@@ -14,6 +14,4 @@ export function backgroundColorComponent(props: BackgroundColorProps) {
       bg: props.backgroundColor,
     },
   });
-
-  return box;
 }

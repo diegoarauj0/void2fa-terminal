@@ -1,6 +1,6 @@
-import { globalEvents } from "./core/globalEvents.js";
-import { pagesHandler } from "./core/pagesHandler.js";
-import { mainScreen } from "./core/screen.js";
+import { globalEvents } from "@/tui/core/globalEvents.js";
+import { pagesHandler } from "@/tui/core/pagesHandler.js";
+import { mainScreen } from "@/tui/core/screen.js";
 
 export function app() {
   globalEvents();

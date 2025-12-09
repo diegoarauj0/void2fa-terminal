@@ -34,6 +34,4 @@ export function commandListComponent(props: CommandListProps) {
       fg: props.color,
     },
   });
-
-  return footerBox;
 }

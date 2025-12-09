@@ -1,14 +1,12 @@
+import { backgroundColorComponent } from "@/tui/components/backgroundColor.component.js";
+import { TotpAccountEntity } from "@/domain/entities/totpAccount.entity.js";
+import { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
+import { accountRepository } from "@/repositories/account.repository.js";
+import { selectComponent } from "@/tui/components/select.component.js";
+import { inputComponent } from "@/tui/components/input.component.js";
+import { schemas } from "@/validators/account.validators.js";
+import { mainScreen } from "@/tui/core/screen.js";
 import blessed from "blessed";
-import { backgroundColorComponent } from "../components/backgroundColor.component.js";
-import { inputComponent } from "../components/input.component.js";
-import * as schema from "@/validators/account.validators.js";
-import { TotpAccountEntity } from "@/entities/totpAccount.entity.js";
-import { detectEncoding } from "@/utils/account.utils.js";
-import { totpAccountRepository } from "@/repositories/totpAccount.repository.js";
-import { mainScreen } from "../core/screen.js";
-import { selectComponent } from "../components/select.component.js";
-import { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
-import { hotpAccountRepository } from "@/repositories/hotpAccount.repository.js";
 
 export async function createPage(container: blessed.Widgets.Node) {
   backgroundColorComponent({ backgroundColor: "black", parent: container });
@@ -19,7 +17,7 @@ export async function createPage(container: blessed.Widgets.Node) {
     color: "magenta",
     label: "Name:",
     title: "Account Name",
-    schema: schema.accountName.required().label("name"),
+    schema: schemas.name.required(),
   });
 
   accountName.containerBox.destroy();
@@ -30,7 +28,7 @@ export async function createPage(container: blessed.Widgets.Node) {
     color: "magenta",
     label: "Issuer:",
     title: "Issuer",
-    schema: schema.accountIssuer.required().label("issuer"),
+    schema: schemas.issuer.required(),
   });
 
   issuer.containerBox.destroy();
@@ -41,7 +39,7 @@ export async function createPage(container: blessed.Widgets.Node) {
     color: "magenta",
     label: "Secret:",
     title: "Account Secret",
-    schema: schema.accountSecret.required().label("secret"),
+    schema: schemas.secret.required(),
   });
 
   secret.containerBox.destroy();
@@ -53,7 +51,7 @@ export async function createPage(container: blessed.Widgets.Node) {
     label: "Digits:",
     title: "TOTP Code Digits",
     initialValue: "6",
-    schema: schema.accountDigits.required().label("digits"),
+    schema: schemas.digits.required(),
   });
 
   digits.containerBox.destroy();
@@ -84,6 +82,8 @@ export async function createPage(container: blessed.Widgets.Node) {
 
   const id = crypto.randomUUID();
 
+  let newAccount;
+
   if (type.value === "TOTP (Time-based One-Time Password)") {
     const period = await inputComponent<number>({
       parent: container,
@@ -92,23 +92,21 @@ export async function createPage(container: blessed.Widgets.Node) {
       label: "Period:",
       title: "TOTP Refresh Interval (seconds)",
       initialValue: "30",
-      schema: schema.accountPeriod.required().label("period"),
+      schema: schemas.period.required(),
     });
 
     period.containerBox.destroy();
 
-    const newAccount = new TotpAccountEntity(
+    newAccount = TotpAccountEntity.create({
       id,
-      secret.value,
-      period.value,
-      digits.value,
-      algorithm.value.toLowerCase() as any,
-      issuer.value,
-      accountName.value,
-      detectEncoding(secret.value),
-    );
-
-    await totpAccountRepository.save(newAccount);
+      secret: secret.value,
+      period: period.value,
+      digits: digits.value,
+      algorithm: algorithm.value.toLowerCase() as any,
+      issuer: issuer.value,
+      name: accountName.value,
+      encoding: undefined,
+    });
   }
 
   if (type.value === "HOTP (HMAC-based One-Time Password)") {
@@ -119,23 +117,25 @@ export async function createPage(container: blessed.Widgets.Node) {
       label: "Counter:",
       title: "HOTP Counter",
       initialValue: "0",
-      schema: schema.accountCounter.required().label("counter"),
+      schema: schemas.counter.required(),
     });
 
     counter.containerBox.destroy();
 
-    const newAccount = new HotpAccountEntity(
+    newAccount = HotpAccountEntity.create({
       id,
-      secret.value,
-      counter.value,
-      digits.value,
-      algorithm.value.toLowerCase() as any,
-      issuer.value,
-      accountName.value,
-      detectEncoding(secret.value),
-    );
+      secret: secret.value,
+      counter: counter.value,
+      digits: digits.value,
+      algorithm: algorithm.value.toLowerCase() as any,
+      issuer: issuer.value,
+      name: accountName.value,
+      encoding: undefined,
+    });
+  }
 
-    await hotpAccountRepository.save(newAccount);
+  if (newAccount) {
+    await accountRepository.save(newAccount);
   }
 
   mainScreen.emit("app:page.change", "accounts");

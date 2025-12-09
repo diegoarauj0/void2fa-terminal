@@ -1,19 +1,18 @@
-import { backgroundColorComponent } from "../components/backgroundColor.component.js";
-import { accountComponent } from "../components/account.component.js";
-import { findAllAccounts, generateHotpCode, generateTotpCode } from "@/utils/account.utils.js";
-import { mainScreen } from "../core/screen.js";
-import blessed from "blessed";
-import { TotpAccountEntity } from "@/entities/totpAccount.entity.js";
+import { backgroundColorComponent } from "@/tui/components/backgroundColor.component.js";
+import { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
+import { TotpAccountEntity } from "@/domain/entities/totpAccount.entity.js";
+import { accountComponent } from "@/tui/components/account.component.js";
+import { accountRepository } from "@/repositories/account.repository.js";
+import { hideAlert, showAlert } from "@/tui/core/globalAlertBox.js";
+import { otpService } from "@/services/otp.service.js";
+import { mainScreen } from "@/tui/core/screen.js";
 import clipboard from "clipboardy";
-import { hideAlert, showAlert } from "../core/globalAlertBox.js";
-import { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
-import { hotpAccountRepository } from "@/repositories/hotpAccount.repository.js";
-import { totpAccountRepository } from "@/repositories/totpAccount.repository.js";
+import blessed from "blessed";
 
 export async function accountsPage(container: blessed.Widgets.Node) {
   const currentPosition = { positionX: 0, positionY: 0 };
 
-  let accounts = await findAllAccounts();
+  let accounts = await accountRepository.findAll();
   let accountsGrid: { positionX: number; positionY: number; accountIndex: number }[] = [];
   let lineBreak = 0;
   let scroll = 0;
@@ -59,16 +58,16 @@ export async function accountsPage(container: blessed.Widgets.Node) {
 
     if (name === "delete" && account !== undefined) {
       if (account instanceof TotpAccountEntity) {
-        await totpAccountRepository.delete(account);
+        await accountRepository.delete(account);
       }
 
       if (account instanceof HotpAccountEntity) {
-        await hotpAccountRepository.delete(account);
+        await accountRepository.delete(account);
       }
 
       accounts = accounts.filter((v) => v.id !== account.id);
 
-      showAlert(`"${account.name}" Account deleted`, "Success!");
+      showAlert(`"${account.name.toValue()}" Account deleted`, "Success!");
       setTimeout(hideAlert, 2000);
 
       currentPosition.positionX = 0;
@@ -83,17 +82,17 @@ export async function accountsPage(container: blessed.Widgets.Node) {
 
     if (name === "enter" && account !== undefined) {
       if (account instanceof TotpAccountEntity) {
-        const code = generateTotpCode(account);
+        const code = otpService.generateTotpCode(account);
         await clipboard.write(code || "");
       }
 
       if (account instanceof HotpAccountEntity) {
-        const code = generateHotpCode(account);
+        const code = otpService.generateHotpCode(account);
         await clipboard.write(code || "");
 
-        account.counter++;
+        account.addCounter();
 
-        await hotpAccountRepository.save(account);
+        await accountRepository.save(account);
       }
 
       showAlert("Code copied to clipboard", "Success!");

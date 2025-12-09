@@ -6,6 +6,7 @@
   "keywords": [
     "2fa",
     "cli",
+    "tui",
     "authenticator",
     "hotp",
     "totp"
@@ -14,11 +15,14 @@
   "type": "module",
   "main": "index.js",
   "bin": {
-    "void2fa": "./dist/index.js"
+    "void2fa": "./dist/index.js",
+    "void2fa-tui": "./dist/index.js"
   },
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "tsx --watch src/index.ts",
+    "start:tui": "node dist/tui/index.js",
+    "start:cli": "node dist/cli/index.js",
+    "dev:tui": "tsx --watch src/tui/index.ts",
+    "dev:cli": "tsx src/cli/index.ts",
     "build": "tsc && tsc-alias"
   },
   "repository": {

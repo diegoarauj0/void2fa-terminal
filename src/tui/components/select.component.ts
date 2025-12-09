@@ -1,5 +1,4 @@
-import { mainScreen } from "../core/screen.js";
-import type { Schema } from "joi";
+import { mainScreen } from "@/tui/core/screen.js";
 import blessed from "blessed";
 
 export interface SelectProps {
@@ -46,24 +45,6 @@ export function selectComponent(props: SelectProps): Promise<SelectPromise> {
         item: { hover: { bg: "gray" } },
       },
       items,
-    });
-
-    const errorBox = blessed.box({
-      parent: containerBox,
-      width: "shrink",
-      height: 3,
-      border: "line",
-      top: "55%",
-      hidden: true,
-      label: "Error:",
-      left: "center",
-      content: "",
-      style: {
-        fg: "red",
-        bg: backgroundColor,
-        label: { fg: "red", bg: backgroundColor },
-        border: { fg: "red", bg: backgroundColor },
-      },
     });
 
     select.focus();

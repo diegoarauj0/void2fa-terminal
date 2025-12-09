@@ -1,10 +1,10 @@
-import { generateHotpCode, generateTotpCode, getTotpRemaining } from "@/utils/account.utils.js";
-import { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
-import { TotpAccountEntity } from "@/entities/totpAccount.entity.js";
-import blessed from "blessed";
+import { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
+import { TotpAccountEntity } from "@/domain/entities/totpAccount.entity.js";
+import { accountRepository } from "@/repositories/account.repository.js";
+import { hideAlert, showAlert } from "@/tui/core/globalAlertBox.js";
+import { otpService } from "@/services/otp.service.js";
 import clipboard from "clipboardy";
-import { hideAlert, showAlert } from "../core/globalAlertBox.js";
-import { hotpAccountRepository } from "@/repositories/hotpAccount.repository.js";
+import blessed from "blessed";
 
 interface AccountProps {
   account: TotpAccountEntity | HotpAccountEntity;
@@ -39,21 +39,21 @@ export function accountComponent(props: AccountProps): void {
   });
 
   function setContent(code: string, text: string) {
-    accountBox.setContent(`Name: ${account.name}\nIssuer: ${account.issuer}\nCode: ${code}\n${text}`);
+    accountBox.setContent(`Name: ${account.name.toValue()}\nIssuer: ${account.issuer.toValue()}\nCode: ${code}\n${text}`);
   }
 
   if (account instanceof HotpAccountEntity) {
-    setContent(generateHotpCode(account), `Counter: ${account.counter}`);
+    setContent(otpService.generateHotpCode(account), `Counter: ${account.counter.toValue()}`);
 
     accountBox.on("click", async () => {
-      const code = generateHotpCode(account);
+      const code = otpService.generateHotpCode(account);
       await clipboard.write(code || "");
 
-      account.counter++;
+      account.addCounter()
 
-      await hotpAccountRepository.save(account);
+      await accountRepository.save(account);
 
-      setContent(generateHotpCode(account), `Counter: ${account.counter}`);
+      setContent(otpService.generateHotpCode(account), `Counter: ${account.counter.toValue()}`);
 
       showAlert("Code copied to clipboard", "Success!");
       setTimeout(hideAlert, 2000);
@@ -62,16 +62,16 @@ export function accountComponent(props: AccountProps): void {
 
   if (account instanceof TotpAccountEntity) {
     accountBox.on("click", async () => {
-      const code = generateTotpCode(account);
+      const code = otpService.generateTotpCode(account);
       await clipboard.write(code || "");
 
       showAlert("Code copied to clipboard", "Success!");
       setTimeout(hideAlert, 2000);
     });
 
-    const remaining = getTotpRemaining(account.period);
-    const progressBar = "*".repeat(((width - 4) / 100) * (remaining / (account.period / 100)));
+    const remaining = otpService.getTotpRemaining(account);
+    const progressBar = "*".repeat(((width - 4) / 100) * (remaining / (account.period.toValue() / 100)));
 
-    setContent(generateTotpCode(account), `${remaining < 10 ? `0${remaining}` : remaining}: ${progressBar}`);
+    setContent(otpService.generateTotpCode(account), `${remaining < 10 ? `0${remaining}` : remaining}: ${progressBar}`);
   }
 }

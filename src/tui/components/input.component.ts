@@ -1,4 +1,4 @@
-import { mainScreen } from "../core/screen.js";
+import { mainScreen } from "@/tui/core/screen.js";
 import type { Schema } from "joi";
 import blessed from "blessed";
 
