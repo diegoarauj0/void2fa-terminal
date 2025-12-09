@@ -1,6 +1,6 @@
 import { generateHotpCode, generateTotpCode, getTotpRemaining } from "@/utils/account.utils.js";
-import { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
-import { TotpAccountEntity } from "@/entities/totpAccount.entity.js";
+import { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
+import { TotpAccountEntity } from "@/domain/entities/totpAccount.entity.js";
 import blessed from "blessed";
 import clipboard from "clipboardy";
 import { hideAlert, showAlert } from "../core/globalAlertBox.js";

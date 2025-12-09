@@ -1,7 +1,7 @@
 import { totpAccountRepository, hotpAccountRepository } from "@/repositories/index.js";
 import { detectEncoding, findAccountByName } from "@/utils/account.utils.js";
-import { TotpAccountEntity, HotpAccountEntity } from "@/entities/index.js";
-import * as schema from "@/validators/account.validators.js";
+import { TotpAccountEntity, HotpAccountEntity } from "@/domain/entities/index.js";
+import * as schema from "@/infra/validators/account.validators.js";
 import { BaseCommand } from "../base.command.js";
 import { logger } from "@/utils/logger.js";
 import crypto from "crypto";

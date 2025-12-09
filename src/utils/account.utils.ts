@@ -1,6 +1,6 @@
 import { hotpAccountRepository, totpAccountRepository } from "@/repositories/index.js";
-import type { TotpAccountEntity } from "@/entities/totpAccount.entity.js";
-import type { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
+import type { TotpAccountEntity } from "@/domain/entities/totpAccount.entity.js";
+import type { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
 import speakeasy from "speakeasy";
 
 export function getTotpRemaining(period: number) {

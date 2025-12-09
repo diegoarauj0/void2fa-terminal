@@ -1,13 +1,13 @@
 import blessed from "blessed";
 import { backgroundColorComponent } from "../components/backgroundColor.component.js";
 import { inputComponent } from "../components/input.component.js";
-import * as schema from "@/validators/account.validators.js";
-import { TotpAccountEntity } from "@/entities/totpAccount.entity.js";
+import * as schema from "@/infra/validators/account.validators.js";
+import { TotpAccountEntity } from "@/domain/entities/totpAccount.entity.js";
 import { detectEncoding } from "@/utils/account.utils.js";
 import { totpAccountRepository } from "@/repositories/totpAccount.repository.js";
 import { mainScreen } from "../core/screen.js";
 import { selectComponent } from "../components/select.component.js";
-import { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
+import { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
 import { hotpAccountRepository } from "@/repositories/hotpAccount.repository.js";
 
 export async function createPage(container: blessed.Widgets.Node) {

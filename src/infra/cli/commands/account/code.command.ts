@@ -1,5 +1,5 @@
 import { hotpAccountRepository, totpAccountRepository } from "@/repositories/index.js";
-import { HotpAccountEntity, TotpAccountEntity } from "@/entities/index.js";
+import { HotpAccountEntity, TotpAccountEntity } from "@/domain/entities/index.js";
 import {
   findAccountByID,
   findAccountByName,

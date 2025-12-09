@@ -1,5 +1,5 @@
-import type { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
-import { TotpAccountEntity } from "@/entities/totpAccount.entity.js";
+import type { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
+import { TotpAccountEntity } from "@/domain/entities/totpAccount.entity.js";
 import { config } from "@/config.js";
 import chalk from "chalk";
 

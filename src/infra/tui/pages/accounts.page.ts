@@ -3,10 +3,10 @@ import { accountComponent } from "../components/account.component.js";
 import { findAllAccounts, generateHotpCode, generateTotpCode } from "@/utils/account.utils.js";
 import { mainScreen } from "../core/screen.js";
 import blessed from "blessed";
-import { TotpAccountEntity } from "@/entities/totpAccount.entity.js";
+import { TotpAccountEntity } from "@/domain/entities/totpAccount.entity.js";
 import clipboard from "clipboardy";
 import { hideAlert, showAlert } from "../core/globalAlertBox.js";
-import { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
+import { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
 import { hotpAccountRepository } from "@/repositories/hotpAccount.repository.js";
 import { totpAccountRepository } from "@/repositories/totpAccount.repository.js";
 

@@ -1,5 +1,5 @@
 import { BaseCommand } from "../base.command.js";
-import { app } from "@/tui/app.js";
+import { app } from "@/infra/tui/app.js";
 
 export const tuiCommand = new BaseCommand({
   name: "tui",

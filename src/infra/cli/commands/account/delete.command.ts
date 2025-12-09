@@ -1,6 +1,6 @@
 import { totpAccountRepository, hotpAccountRepository } from "@/repositories/index.js";
 import { findAccountByID, findAccountByName } from "@/utils/account.utils.js";
-import { HotpAccountEntity } from "@/entities/hotpAccount.entity.js";
+import { HotpAccountEntity } from "@/domain/entities/hotpAccount.entity.js";
 import { BaseCommand } from "../base.command.js";
 import { logger } from "@/utils/logger.js";
 
